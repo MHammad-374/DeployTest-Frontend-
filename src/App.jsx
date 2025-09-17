@@ -9,20 +9,45 @@ function App() {
   ]);
   const [inpt, setInpt] = useState("")
 
-
-  useEffect(() => {
+  const fetchData = () => {
     fetch(import.meta.env.VITE_API_URL)
       .then((res) => res.json())
       .then((data) => {
         setUsers(data)
       })
+  }
+
+  useEffect(() => {
+    fetchData();
   }, [])
 
 
-  const addUser = (newUser) => {
-    let add = [...users, newUser];
-    setUsers(add);
-    setInpt("");
+  const addUser = async (newUser) => {
+    // let add = [...users, newUser];
+    // setUsers(add);
+    try {
+      const res = await fetch(`${import.meta.env.VITE_API_URL}`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(newUser),
+      });
+
+      const data = await res.json();
+
+      if (res.ok) {
+        alert(`✅ ${data.message}`);
+        setInpt("");
+        fetchData();
+      } else {
+        alert(`❌ ${data.message || "Error creating user"}`);
+      }
+
+    } catch (error) {
+      alert("⚠️ Server error: " + error.message);
+    }
+
   }
 
   const delUser = async (id) => {
@@ -34,7 +59,7 @@ function App() {
       const data = await res.json();
 
       if (res.ok) {
-        
+
         // Update UI after delete
         setUsers(users.filter((user) => user._id !== id));
 
