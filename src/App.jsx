@@ -12,49 +12,68 @@ function App() {
 
   useEffect(() => {
     fetch(import.meta.env.VITE_API_URL)
-    .then((res)=>res.json())
-    .then((data)=>{
-     setUsers(data) 
-    })
+      .then((res) => res.json())
+      .then((data) => {
+        setUsers(data)
+      })
   }, [])
-  
 
-  const addUser = (newUser = { name: "default" }) => {
+
+  const addUser = (newUser) => {
     let add = [...users, newUser];
     setUsers(add);
     setInpt("");
   }
 
-  const delUser = (name = "jkl") => {
-    let del = users.filter(user => user.name !== name)
-    setUsers(del);
+  const delUser = async (id) => {
+    // let del = users.filter(user => user._id !== id)
+    // setUsers(del);
+
+    try {
+      const res = await fetch(import.meta.env.VITE_API_URL + "/" + id, {
+        method: "DELETE",
+      });
+
+      const data = await res.json();
+
+      if (res.ok) {
+        alert(data.message);
+        // Update UI after delete
+        setUsers(users.filter((user) => user._id !== id));
+      } else {
+        alert(data.message || "Error deleting user");
+      }
+    } catch (error) {
+      console.error("Error deleting user:", error);
+    }
+
   }
 
-  const editUser = (name) => { 
+  const editUser = (name) => {
     setInpt(name)
     delUser(name)
   }
 
-return (
-  <>
-    <Input addUser={addUser} inpt={inpt} setInpt={setInpt} />
-    {/* <button onClick={() => delUser()}>ert</button> */}
-    <h2>Users</h2>
-    {
-      users.map((user, index) => {
-        return (
-          <div key={index} className='flex'>
-            <p>{user.name}</p>
-            <div>
-              <button onClick={() => editUser(user.name)}>Edit</button>
-              <button onClick={() => delUser(user.name)}>Del</button>
+  return (
+    <>
+      <Input addUser={addUser} inpt={inpt} setInpt={setInpt} />
+      {/* <button onClick={() => delUser()}>ert</button> */}
+      <h2>Users</h2>
+      {
+        users.map((user, index) => {
+          return (
+            <div key={index} className='flex'>
+              <p>{user.name}</p>
+              <div>
+                <button onClick={() => editUser(user.name)}>Edit</button>
+                <button onClick={() => delUser(user._id)}>Del</button>
+              </div>
             </div>
-          </div>
-        )
-      })
-    }
-  </>
-)
+          )
+        })
+      }
+    </>
+  )
 }
 
 export default App
