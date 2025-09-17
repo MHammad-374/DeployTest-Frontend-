@@ -9,16 +9,21 @@ function App() {
   ]);
   const [inpt, setInpt] = useState("")
 
-  const fetchData = () => {
+  // const fetchData = () => {
+  //   fetch(import.meta.env.VITE_API_URL)
+  //     .then((res) => res.json())
+  //     .then((data) => {
+  //       setUsers(data)
+  //     })
+  // }
+
+  useEffect(() => {
+    // fetchData();
     fetch(import.meta.env.VITE_API_URL)
       .then((res) => res.json())
       .then((data) => {
         setUsers(data)
       })
-  }
-
-  useEffect(() => {
-    fetchData();
   }, [])
 
 
@@ -39,7 +44,12 @@ function App() {
       if (res.ok) {
         alert(`✅ ${data.message}`);
         setInpt("");
-        fetchData();
+        // fetchData();
+        fetch(import.meta.env.VITE_API_URL)
+          .then((res) => res.json())
+          .then((data) => {
+            setUsers(data)
+          })
       } else {
         alert(`❌ ${data.message || "Error creating user"}`);
       }
