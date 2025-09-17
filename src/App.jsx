@@ -26,9 +26,6 @@ function App() {
   }
 
   const delUser = async (id) => {
-    // let del = users.filter(user => user._id !== id)
-    // setUsers(del);
-
     try {
       const res = await fetch(import.meta.env.VITE_API_URL + "/" + id, {
         method: "DELETE",
@@ -37,9 +34,11 @@ function App() {
       const data = await res.json();
 
       if (res.ok) {
-        alert(data.message);
+        
         // Update UI after delete
         setUsers(users.filter((user) => user._id !== id));
+
+        alert(data.message);
       } else {
         alert(data.message || "Error deleting user");
       }
