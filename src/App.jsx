@@ -83,9 +83,9 @@ function App() {
 
   }
 
-  const editUser = (name) => {
+  const editUser = (name, id) => {
     setInpt(name)
-    delUser(name)
+    delUser(id)
   }
 
   return (
@@ -99,7 +99,7 @@ function App() {
             <div key={index} className='flex'>
               <p>{user.name}</p>
               <div>
-                <button onClick={() => editUser(user.name)}>Edit</button>
+                <button onClick={() => editUser(user.name, user._id)}>Edit</button>
                 <button onClick={() => delUser(user._id)}>Del</button>
               </div>
             </div>
